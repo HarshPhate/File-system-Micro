@@ -10,7 +10,6 @@ import java.util.Map;
 
 @FeignClient(
         name = "file-service",
-        url = "http://localhost:8081",
         fallback = FileServiceClientFallBack.class
 )
 public interface FileSearchClient {
