@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name="folder-service",fallback = FolderServiceClientFallBack.class)
+@FeignClient(name="folder-service",url = "http://localhost:8082",fallback = FolderServiceClientFallBack.class)
 public interface FolderSearchClient {
 
     @GetMapping("/api/folders")

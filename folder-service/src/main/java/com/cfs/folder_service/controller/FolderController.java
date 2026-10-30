@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/folders")
 public class FolderController {
@@ -16,7 +18,7 @@ public class FolderController {
     private FolderRepository folderRepository;
 
 
-    @GetMapping({"", "/folders"})
+    @GetMapping("/folders")
     public List<FolderEntity> getAllFolders()
     {
         return folderRepository.findAll();
@@ -31,9 +33,6 @@ public class FolderController {
     @PostMapping("/create")
     public FolderEntity createFolder(@RequestBody FolderEntity folder)
     {
-        if (folder.getId() == null) {
-            folder.setId(System.currentTimeMillis());
-        }
         return folderRepository.save(folder);
 
     }
@@ -49,6 +48,28 @@ public class FolderController {
     public List<FolderEntity> getFoldersByParent(@PathVariable Long parentId)
     {
         return folderRepository.findByParentId(parentId);
+    }
+
+    @PostMapping("/create")
+    public Map<String,Object> createNewFolder(@RequestBody Map<String,Object> request)
+    {
+        try {
+            String name=(String) request.get("name");
+            Long parentId=request.get("parentId")!=null ?
+                    Long.valueOf(request.get("parentId").toString() ): null;
+
+            FolderEntity newFolder=new FolderEntity();
+            newFolder.setId(System.currentTimeMillis());
+            newFolder.setName(name);
+            newFolder.setParentId(parentId);
+
+            FolderEntity saved=folderRepository.save(newFolder);
+            return Map.of("Success",true,"folder",saved);
+        }
+        catch (Exception e)
+        {
+            return Map.of("Success",false,"error",e.getMessage());
+        }
     }
 
 }
